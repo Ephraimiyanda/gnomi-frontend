@@ -45,6 +45,14 @@ function toMapPosition(lat: number, lng: number) {
 export default async function LivePanelPage() {
   const topics = await getTopics()
 
+const topics: TrendingTopic[] = [
+  { id: 't1', name: 'AI Regulation', debates: 42, engagement: 91 },
+  { id: 't2', name: 'Election Integrity', debates: 25, engagement: 84 },
+  { id: 't3', name: 'Crypto Adoption', debates: 31, engagement: 88 },
+  { id: 't4', name: 'Space Policy', debates: 17, engagement: 77 },
+]
+
+export default function HomePage() {
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-cyan-900/30 bg-slate-900/60 p-6">
