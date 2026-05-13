@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Crown, Send, ShieldAlert, User } from 'lucide-react'
-import { useDebateSocket } from '@/hooks/useDebateSocket'
-import { type DebateStatus, useDebateStore } from '@/store/debateStore'
+import { useDebateSocket } from '@/app/hooks/useDebateSocket'
+import { useDebateStore } from '@/app/store/debateStore'
+import { DebateStatus } from '@/app/types/items'
 
 export default function DebateWarRoomPage({ params }: { params: { id: string } }) {
   const { id } = params
