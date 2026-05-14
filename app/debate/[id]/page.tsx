@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { use, useEffect, useMemo, useRef, useState } from 'react'
 import { Crown, Send, ShieldAlert, User } from 'lucide-react'
 import { useDebateSocket } from '@/app/hooks/useDebateSocket'
 import { useDebateStore } from '@/app/store/debateStore'
 
-export default function DebateWarRoomPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default function DebateWarRoomPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const socketRef = useDebateSocket({ debateId: id, enabled: true })
 
   const transcriptRef = useRef<HTMLDivElement | null>(null)
