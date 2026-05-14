@@ -1,16 +1,25 @@
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import { Navbar } from '@/app/components/layout/Navbar'
-import { DebateCard, type DebateRoom } from '@/app/components/home/DebateCard'
-import { MapSection } from '@/app/components/home/MapSection'
-import { TopicCard, type TrendingTopic } from '@/app/components/home/TopicCard'
+import { Globe, Radar, Users } from 'lucide-react'
+import {type TrendingTopic } from './components/home/TopicCard'
 
 interface Topic {
   id: string
   title: string
   description: string
   creatorId: string
+  lat?: number
+  lng?: number
+  audienceCount?: number
 }
+
+
+const MOCK_COORDINATES: Array<Pick<Topic, 'lat' | 'lng'>> = [
+  { lat: 40.7128, lng: -74.006 },
+  { lat: 51.5072, lng: -0.1276 },
+  { lat: 6.5244, lng: 3.3792 },
+  { lat: 35.6762, lng: 139.6503 },
+  { lat: -33.8688, lng: 151.2093 },
+]
 
 async function getTopics(): Promise<Topic[]> {
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -19,59 +28,23 @@ async function getTopics(): Promise<Topic[]> {
   const response = await fetch(`${baseUrl}/topics`, { cache: 'no-store' })
   if (!response.ok) return []
 
-  return (await response.json()) as Topic[]
-}
+  const topics = (await response.json()) as Topic[]
 
-function seededNumber(seed: string, min: number, max: number) {
-  let hash = 0
-  for (let i = 0; i < seed.length; i += 1) hash = (hash << 5) - hash + seed.charCodeAt(i)
-  return Math.abs(hash % (max - min + 1)) + min
-}
-
-function toMapPosition(seed: string) {
-  const left = `${seededNumber(seed, 18, 82)}%`
-  const top = `${seededNumber(`${seed}-lat`, 20, 75)}%`
-  return { left, top }
-}
-
-function getCategory(title: string): DebateRoom['category'] {
-  const lower = title.toLowerCase()
-  if (lower.includes('tech') || lower.includes('ai')) return 'Tech'
-  if (lower.includes('ethic')) return 'Ethics'
-  if (lower.includes('sport')) return 'Sports'
-  return 'Politics'
-}
-
-export default async function HomePage() {
-  const topics = await getTopics()
-
-  const mapMarkers = topics.map((topic) => ({
-    id: topic.id,
-    label: topic.title,
-    country: 'Global Region',
-    rooms: seededNumber(topic.id, 1, 9),
-    topic: topic.title,
-    ...toMapPosition(topic.id),
+  return topics.map((topic, index) => ({
+    ...topic,
+    lat: MOCK_COORDINATES[index % MOCK_COORDINATES.length]?.lat,
+    lng: MOCK_COORDINATES[index % MOCK_COORDINATES.length]?.lng,
+    audienceCount: 15 + index * 4,
   }))
+}
 
-  const liveRooms: DebateRoom[] = topics.map((topic) => ({
-    id: topic.id,
-    title: topic.title,
-    participants: seededNumber(topic.id, 20, 160),
-    country: 'Global',
-    flag: '🌍',
-    category: getCategory(topic.title),
-  }))
+function toMapPosition(lat: number, lng: number) {
+  const x = ((lng + 180) / 360) * 100
+  const y = ((90 - lat) / 180) * 100
+  return { left: `${x}%`, top: `${y}%` }
+}
 
-  const trendingTopics: TrendingTopic[] = topics.slice(0, 8).map((topic) => ({
-    id: topic.id,
-    name: topic.title,
-    debates: seededNumber(topic.id, 1, 20),
-    engagement: seededNumber(`${topic.id}-eng`, 60, 98),
-  }))
-
-export default async function LivePanelPage() {
-  const topics = await getTopics()
+  // const topics = await getTopics()
 
 const topics: TrendingTopic[] = [
   { id: 't1', name: 'AI Regulation', debates: 42, engagement: 91 },
@@ -82,38 +55,71 @@ const topics: TrendingTopic[] = [
 
 export default function HomePage() {
   return (
-    <div className="space-y-6 pb-8">
-      <Navbar />
-
-      <section className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-slate-900/70 px-6 py-16 text-center shadow-2xl shadow-blue-950/25">
-        <div className="absolute inset-0 -z-10 opacity-30 [background-image:radial-gradient(circle_at_20%_20%,#3b82f6_0,transparent_35%),radial-gradient(circle_at_80%_20%,#60a5fa_0,transparent_35%),radial-gradient(circle_at_50%_85%,#1d4ed8_0,transparent_40%)]" />
-        <h1 className="text-3xl font-bold text-white md:text-5xl">Join Global Debates in Real Time</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-300 md:text-base">
-          Watch high-stakes argument battles, vote on winning logic, and review AI Judge verdicts across the world.
+    <section className="space-y-6">
+      <div className="rounded-2xl border border-cyan-900/30 bg-slate-900/60 p-6">
+        <p className="mb-2 inline-flex items-center gap-2 rounded-full border border-cyan-700/50 px-3 py-1 text-xs text-cyan-300">
+          <Radar className="h-3.5 w-3.5" />
+          Phase 2 • Live Globe Panel
         </p>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/search" className="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 font-medium text-white transition hover:bg-blue-400">Join Debate <ArrowRight className="h-4 w-4" /></Link>
-          <Link href="/#global-map" className="rounded-xl border border-slate-600 px-5 py-3 font-medium text-slate-200 transition hover:border-blue-400 hover:text-blue-200">Explore Topics</Link>
-        </div>
-      </section>
+        <h1 className="text-2xl font-bold text-white">Interactive Global Debate Map</h1>
+        <p className="mt-2 text-sm text-slate-400">
+          Marker interactions are now in place for preview. Next step is replacing this with a 3D globe provider.
+        </p>
 
-      <MapSection markers={mapMarkers} />
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+          <div className="relative min-h-[430px] overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.1),transparent_55%)]" />
+            <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(148,163,184,.2)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,.2)_1px,transparent_1px)] [background-size:32px_32px]" />
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-white">Live Debate Rooms</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {liveRooms.map((room) => <DebateCard key={room.id} room={room} />)}
-          {liveRooms.length === 0 && <p className="text-sm text-slate-400">No live rooms currently available.</p>}
-        </div>
-      </section>
+            <div className="absolute left-1/2 top-1/2 h-[88%] w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-700/50 bg-slate-950/70 shadow-[0_0_80px_rgba(34,211,238,.2)_inset]">
+              <div className="absolute inset-[6%] rounded-full border border-cyan-900/40" />
+              {topics.map((topic) => {
+                if (typeof topic.lat !== 'number' || typeof topic.lng !== 'number') return null
+                const pos = toMapPosition(topic.lat, topic.lng)
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-white">Trending Topics</h2>
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {trendingTopics.map((topic) => <TopicCard key={topic.id} topic={topic} />)}
-          {trendingTopics.length === 0 && <p className="text-sm text-slate-400">No trending topics yet.</p>}
+                return (
+                  <Link
+                    key={topic.id}
+                    href={`/debate/${topic.id}`}
+                    className="group absolute -translate-x-1/2 -translate-y-1/2"
+                    style={pos}
+                  >
+                    <span className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-cyan-400/25" />
+                    <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-cyan-400 bg-slate-900 text-cyan-200 shadow-lg shadow-cyan-900/40 transition group-hover:scale-110">
+                      <Globe className="h-4 w-4" />
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+
+          <aside className="space-y-3">
+            {topics.map((topic) => (
+              <Link
+                href={`/debate/${topic.id}`}
+                key={topic.id}
+                className="block rounded-xl border border-slate-800 bg-slate-900/80 p-4 transition hover:border-cyan-600/60 hover:bg-slate-900"
+              >
+                <h2 className="line-clamp-2 text-sm font-semibold text-white">{topic.title}</h2>
+                <p className="mt-2 line-clamp-3 text-xs text-slate-400">{topic.description}</p>
+                <div className="mt-3 flex items-center justify-between text-xs text-cyan-300">
+                  <span>Creator: {topic.creatorId}</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Users className="h-3.5 w-3.5" /> {topic.audienceCount ?? 0}
+                  </span>
+                </div>
+              </Link>
+            ))}
+
+            {topics.length === 0 && (
+              <div className="rounded-xl border border-dashed border-slate-700 p-5 text-sm text-slate-400">
+                No live debates detected. Once topics exist, markers and cards will appear automatically.
+              </div>
+            )}
+          </aside>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   )
 }
