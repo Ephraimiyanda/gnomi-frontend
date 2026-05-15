@@ -46,7 +46,16 @@ export default function HomePage() {
     <section className="relative min-h-[82vh] overflow-hidden rounded-2xl border border-cyan-500/30 bg-[#060c1f] p-4 shadow-[0_0_80px_rgba(0,209,255,.15)] md:p-6">
       <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,rgba(148,163,184,.2)_1px,transparent_0)] [background-size:16px_16px]" />
       <div className="relative z-10">
-      
+        <header className="mb-4 flex items-center justify-between border-b border-cyan-500/20 pb-3">
+          <button className="rounded-lg border border-slate-700 bg-slate-900/70 p-2 text-slate-300">
+            <Grid2x2 className="h-4 w-4" />
+          </button>
+          <h1 className="text-xl font-bold tracking-[0.2em] text-cyan-400">DEBATE ARENA</h1>
+          <button className="rounded-lg border border-slate-700 bg-slate-900/70 p-2 text-slate-300">
+            <Radio className="h-4 w-4" />
+          </button>
+        </header>
+
         <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
           <div className="relative rounded-2xl border border-cyan-500/20 bg-gradient-to-b from-[#040a1b] to-[#030713] p-4">
             <div className="max-w-sm rounded-xl border border-slate-700/80 bg-slate-900/60 px-3 py-2 text-xs text-slate-500">
