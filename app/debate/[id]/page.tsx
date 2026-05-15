@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { use, useEffect, useMemo, useRef, useState } from 'react'
 import { Crown, Send, ShieldAlert, User } from 'lucide-react'
 import { useDebateSocket } from '@/app/hooks/useDebateSocket'
 import { useDebateStore } from '@/app/store/debateStore'
 
-export default function DebateWarRoomPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default function DebateWarRoomPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const socketRef = useDebateSocket({ debateId: id, enabled: true })
 
   const transcriptRef = useRef<HTMLDivElement | null>(null)
@@ -51,7 +51,7 @@ export default function DebateWarRoomPage({ params }: { params: { id: string } }
 
   return (
     <section className="grid h-[78vh] gap-4 lg:grid-cols-[2fr_1fr]">
-      <article className="flex min-h-0 flex-col rounded-2xl border border-slate-800 bg-slate-900/70">
+      <article className="flex min-h-0 flex-col rounded-xl border border-slate-800 bg-slate-900/70">
         <header className="border-b border-slate-800 px-5 py-4">
           <h1 className="text-lg font-semibold text-cyan-300">Debate Transcript</h1>
           <p className="text-xs text-slate-400">Room: {id}</p>
