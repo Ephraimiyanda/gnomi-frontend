@@ -1,5 +1,5 @@
 import { Activity, Grid2x2, Plus, Radio } from 'lucide-react'
-import { ThreeGlobeMap } from '@/app/components/home/ThreeGlobeMap'
+import { ReactMapGlMap } from '@/app/components/home/ReactMapGlMap'
 
 interface TacticalRoom {
   id: string
@@ -80,7 +80,7 @@ export default function HomePage() {
               <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.14),rgba(3,7,18,.05)_55%,transparent_70%)]" />
               <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_50%_20%,#0ea5e9_0,transparent_40%)]" />
 
-              <ThreeGlobeMap nodes={pulseNodes} />
+              <ReactMapGlMap nodes={pulseNodes} />
             </div>
 
             <button className="absolute bottom-5 right-5 rounded-xl bg-cyan-400 p-3 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.7)] transition hover:scale-105">
