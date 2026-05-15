@@ -1,4 +1,5 @@
 import { Activity, Grid2x2, Plus, Radio } from 'lucide-react'
+import { ThreeGlobeMap } from '@/app/components/home/ThreeGlobeMap'
 
 interface TacticalRoom {
   id: string
@@ -33,11 +34,11 @@ const tacticalFeed: TacticalRoom[] = [
 ]
 
 const pulseNodes = [
-  { id: 'n1', left: '42%', top: '29%' },
-  { id: 'n2', left: '57%', top: '24%' },
-  { id: 'n3', left: '66%', top: '39%' },
-  { id: 'n4', left: '53%', top: '58%' },
-  { id: 'n5', left: '42%', top: '66%' },
+  { id: 'n1', lat: 40.7128, lng: -74.006 },
+  { id: 'n2', lat: 51.5072, lng: -0.1276 },
+  { id: 'n3', lat: 6.5244, lng: 3.3792 },
+  { id: 'n4', lat: 28.6139, lng: 77.209 },
+  { id: 'n5', lat: 52.52, lng: 13.405 },
 ]
 
 export default function HomePage() {
@@ -45,6 +46,16 @@ export default function HomePage() {
     <section className="relative min-h-[82vh] overflow-hidden rounded-2xl border border-cyan-500/30 bg-[#060c1f] p-4 shadow-[0_0_80px_rgba(0,209,255,.15)] md:p-6">
       <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,rgba(148,163,184,.2)_1px,transparent_0)] [background-size:16px_16px]" />
       <div className="relative z-10">
+        <header className="mb-4 flex items-center justify-between border-b border-cyan-500/20 pb-3">
+          <button className="rounded-lg border border-slate-700 bg-slate-900/70 p-2 text-slate-300">
+            <Grid2x2 className="h-4 w-4" />
+          </button>
+          <h1 className="text-xl font-bold tracking-[0.2em] text-cyan-400">DEBATE ARENA</h1>
+          <button className="rounded-lg border border-slate-700 bg-slate-900/70 p-2 text-slate-300">
+            <Radio className="h-4 w-4" />
+          </button>
+        </header>
+
         <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
           <div className="relative rounded-2xl border border-cyan-500/20 bg-gradient-to-b from-[#040a1b] to-[#030713] p-4">
             <div className="max-w-sm rounded-xl border border-slate-700/80 bg-slate-900/60 px-3 py-2 text-xs text-slate-500">
@@ -54,9 +65,7 @@ export default function HomePage() {
             <div className="mt-4 flex flex-wrap items-end gap-5 text-xs">
               <div>
                 <p className="text-slate-500">OPERATIONAL RANK</p>
-                <p className="font-semibold tracking-widest text-cyan-400">
-                  ELITE LVL 08
-                </p>
+                <p className="font-semibold tracking-widest text-cyan-400">ELITE LVL 08</p>
               </div>
               <div>
                 <p className="text-slate-500">CREDIBILITY RATING</p>
@@ -65,41 +74,22 @@ export default function HomePage() {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
-              {[
-                "AGI",
-                "ECONOMICS",
-                "GEOPOLITICS",
-                "BIO-ETHICS",
-                "CYBERWAR",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-cyan-500/30 bg-[#071531] px-3 py-1 text-slate-300"
-                >
+              {['AGI', 'ECONOMICS', 'GEOPOLITICS', 'BIO-ETHICS', 'CYBERWAR'].map((tag) => (
+                <span key={tag} className="rounded-full border border-cyan-500/30 bg-[#071531] px-3 py-1 text-slate-300">
                   {tag}
                 </span>
               ))}
             </div>
 
             <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs text-slate-300">
-              <Activity className="h-3.5 w-3.5 text-cyan-400" /> ACTIVE ZONES:
-              42
+              <Activity className="h-3.5 w-3.5 text-cyan-400" /> ACTIVE ZONES: 42
             </div>
 
             <div className="relative mt-6 h-[460px] overflow-hidden rounded-2xl border border-cyan-500/10 bg-[#020818]">
               <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.14),rgba(3,7,18,.05)_55%,transparent_70%)]" />
               <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_50%_20%,#0ea5e9_0,transparent_40%)]" />
 
-              {pulseNodes.map((node) => (
-                <div
-                  key={node.id}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: node.left, top: node.top }}
-                >
-                  <span className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full bg-cyan-400/20" />
-                  <span className="relative block h-7 w-7 rounded-full border border-cyan-300/70 bg-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,.7)]" />
-                </div>
-              ))}
+              <ThreeGlobeMap nodes={pulseNodes} />
             </div>
 
             <button className="absolute bottom-5 right-5 rounded-xl bg-cyan-400 p-3 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.7)] transition hover:scale-105">
@@ -107,26 +97,19 @@ export default function HomePage() {
             </button>
           </div>
 
-          <aside className="rounded-2xl border border-cyan-500/30 bg-gradient-to-b from-[#040a1b] to-[#030713] p-3">
+          <aside className="rounded-2xl border border-cyan-500/30 bg-slate-900/65 p-3">
             <div className="mb-3 flex items-center gap-2 border-b border-slate-700 pb-2 text-sm font-semibold tracking-wide text-slate-200">
               <Radio className="h-4 w-4 text-cyan-400" /> TACTICAL FEED
             </div>
 
             <div className="space-y-3">
               {tacticalFeed.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-xl border border-slate-700 bg-slate-900/80 p-3"
-                >
+                <article key={item.id} className="rounded-xl border border-slate-700 bg-slate-900/80 p-3">
                   <div className="mb-2 flex items-center justify-between text-[10px]">
-                    <span className="rounded bg-cyan-500/20 px-2 py-0.5 text-cyan-300">
-                      {item.round}
-                    </span>
+                    <span className="rounded bg-cyan-500/20 px-2 py-0.5 text-cyan-300">{item.round}</span>
                     <span className="text-yellow-300">👥 {item.audience}</span>
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-100">
-                    {item.title}
-                  </h3>
+                  <h3 className="text-sm font-semibold text-slate-100">{item.title}</h3>
                   <p className="mt-1 text-xs text-slate-400">{item.subtitle}</p>
                 </article>
               ))}
@@ -139,5 +122,5 @@ export default function HomePage() {
         </div>
       </div>
     </section>
-  );
+  )
 }
