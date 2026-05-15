@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface NodePoint {
   id: string
@@ -51,6 +51,7 @@ function latLngToVector3(lat: number, lng: number, radius: number) {
 
 export function ThreeGlobeMap({ nodes }: { nodes: NodePoint[] }) {
   const mountRef = useRef<HTMLDivElement | null>(null)
+  const [threeUnavailable, setThreeUnavailable] = useState(false)
 
   useEffect(() => {
     const mountEl = mountRef.current
@@ -58,20 +59,48 @@ export function ThreeGlobeMap({ nodes }: { nodes: NodePoint[] }) {
 
     let cleanup: (() => void) | undefined
 
-    const boot = async () => {
-      if (!window.THREE) {
+    const loadThreeScript = async () => {
+      if (window.THREE) return true
+
+      try {
         await new Promise<void>((resolve, reject) => {
           const script = document.createElement('script')
           script.src = 'https://unpkg.com/three@0.179.1/build/three.min.js'
           script.async = true
           script.onload = () => resolve()
-          script.onerror = () => reject(new Error('Failed to load Three.js'))
+          script.onerror = () => reject(new Error('CDN unavailable'))
           document.head.appendChild(script)
         })
+      } catch {
+        try {
+          await new Promise<void>((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = 'https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.min.js'
+            script.async = true
+            script.onload = () => resolve()
+            script.onerror = () => reject(new Error('CDN unavailable'))
+            document.head.appendChild(script)
+          })
+        } catch {
+          return false
+        }
+      }
+
+      return Boolean(window.THREE)
+    }
+
+    const boot = async () => {
+      const loaded = await loadThreeScript()
+      if (!loaded) {
+        setThreeUnavailable(true)
+        return
       }
 
       const THREE = window.THREE as ThreeLike | undefined
-      if (!THREE) return
+      if (!THREE) {
+        setThreeUnavailable(true)
+        return
+      }
 
       const scene = new THREE.Scene()
       const camera = new THREE.PerspectiveCamera(50, mountEl.clientWidth / mountEl.clientHeight, 0.1, 1000)
@@ -128,7 +157,7 @@ export function ThreeGlobeMap({ nodes }: { nodes: NodePoint[] }) {
       cleanup = () => {
         cancelAnimationFrame(raf)
         window.removeEventListener('resize', handleResize)
-        mountEl.removeChild(renderer.domElement)
+        if (renderer.domElement.parentNode === mountEl) mountEl.removeChild(renderer.domElement)
         renderer.dispose()
       }
     }
@@ -136,6 +165,16 @@ export function ThreeGlobeMap({ nodes }: { nodes: NodePoint[] }) {
     void boot()
     return () => cleanup?.()
   }, [nodes])
+
+  if (threeUnavailable) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="rounded-xl border border-cyan-500/30 bg-slate-900/60 px-4 py-3 text-xs text-slate-300">
+          3D globe temporarily unavailable (network blocked). Retrying on refresh.
+        </div>
+      </div>
+    )
+  }
 
   return <div ref={mountRef} className="h-full w-full" />
 }
