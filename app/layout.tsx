@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import './globals.css'
+import { Navbar } from './components/layout/Navbar'
 
 export const metadata: Metadata = {
   title: 'Gnomi Debate Arena',
@@ -14,23 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
+      <body className="min-h-screen bg-[#060c1f] text-slate-100 antialiased [background-image:radial-gradient(circle_at_1px_1px,rgba(148,163,184,.2)_1px,transparent_0)] [background-size:16px_16px]">
         <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 lg:px-8">
-          <header className="mb-6 rounded-2xl border border-slate-800 bg-slate-900/80 px-6 py-4 backdrop-blur">
-            <nav className="flex items-center justify-between">
-              <Link href="/" className="text-lg font-semibold tracking-wide text-cyan-300">
-                Gnomi • War Room
-              </Link>
-              <div className="flex items-center gap-3 text-sm text-slate-300">
-                <Link href="/" className="rounded-lg px-3 py-2 transition hover:bg-slate-800 hover:text-white">
-                  Live Panel
-                </Link>
-                <Link href="/search" className="rounded-lg px-3 py-2 transition hover:bg-slate-800 hover:text-white">
-                  Search Debates
-                </Link>
-              </div>
-            </nav>
-          </header>
+          <Navbar />
           <main className="flex-1">{children}</main>
         </div>
       </body>
