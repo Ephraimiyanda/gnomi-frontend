@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import './globals.css'
 import { Navbar } from './components/layout/Navbar'
+import { CreateTopicModal } from './components/home/CreateTopicModal'
 
 export const metadata: Metadata = {
   title: 'Gnomi Debate Arena',
@@ -19,6 +20,7 @@ export default function RootLayout({
         <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 lg:px-8 ">
           <Navbar />
           <main className="flex-1 ">{children}</main>
+          <CreateTopicModal/>
         </div>
       </body>
     </html>

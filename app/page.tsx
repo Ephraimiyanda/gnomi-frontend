@@ -1,5 +1,6 @@
 import { Activity, Grid2x2, Plus, Radio } from "lucide-react";
 import { ReactMapGlMap } from "@/app/components/home/ReactMapGlMap";
+import { GlobeMap } from "./components/home/GlobeMap";
 
 interface TacticalRoom {
   id: string;
@@ -34,13 +35,12 @@ const tacticalFeed: TacticalRoom[] = [
 ];
 
 const pulseNodes = [
-  { id: "n1", lat: 40.7128, lng: -74.006 },
-  { id: "n2", lat: 51.5072, lng: -0.1276 },
-  { id: "n3", lat: 6.5244, lng: 3.3792 },
+  { id: "n1", lat: 40.7128, lng: -74.006, topicId: "agi" },
+  { id: "n2", lat: 51.5072, lng: -0.1276, topicId: "quantum" },
+  { id: "n3", lat: 6.5244, lng: 3.3792, topicId: "mars" },
   { id: "n4", lat: 28.6139, lng: 77.209 },
   { id: "n5", lat: 52.52, lng: 13.405 },
 ];
-
 export default function HomePage() {
   return (
     <section className="relative min-h-[82vh] overflow-hidden rounded-2xl border border-cyan-500/30 bg-[#060c1f] p-4 shadow-[0_0_80px_rgba(0,209,255,.15)] md:p-6">
@@ -91,12 +91,8 @@ export default function HomePage() {
               <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.14),rgba(3,7,18,.05)_55%,transparent_70%)]" />
               <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_50%_20%,#0ea5e9_0,transparent_40%)]" />
 
-              <ReactMapGlMap nodes={pulseNodes} />
+              <GlobeMap nodes={pulseNodes} />
             </div>
-
-            <button className="absolute bottom-5 right-5 rounded-xl bg-cyan-400 p-3 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.7)] transition hover:scale-105">
-              <Plus className="h-5 w-5" />
-            </button>
           </div>
 
           <aside className="rounded-2xl border border-cyan-500/30 bg-slate-900/65 p-3">
@@ -104,7 +100,7 @@ export default function HomePage() {
               <Radio className="h-4 w-4 text-cyan-400" /> TACTICAL FEED
             </div>
 
-            <div className="space-y-3">
+            <div className="py-3 h-full flex flex-col gap-2">
               {tacticalFeed.map((item) => (
                 <article
                   key={item.id}
@@ -124,7 +120,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            <button className="mt-4 w-full rounded-lg border border-slate-700 bg-slate-950 py-2 text-xs font-semibold tracking-[0.16em] text-slate-300 transition hover:border-cyan-500 hover:text-cyan-300">
+            <button className=" w-full cursor-pointer bottom-5 sticky rounded-lg border border-slate-700 bg-slate-950 py-2 text-xs font-semibold tracking-[0.16em] text-slate-300 transition hover:border-cyan-500 hover:text-cyan-300">
               ACCESS FULL DIRECTORY
             </button>
           </aside>
